@@ -23,6 +23,8 @@ export default function TableComponent() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
   const [title, setTitle] = useState();
+  const [updateId, setUpdateId] = useState(true);
+  const [aux, setAux] = useState(true);
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/photos?_limit=100")
@@ -30,11 +32,38 @@ export default function TableComponent() {
       .then((data) => {
         data.map((e) => {
           e.actions = e.id;
+          e.fakeId = e.id;
+          e.fakeAlbumId = e.albumId;
           return e;
         });
         setRows(data);
       })
   }, [])
+
+  useEffect(() => {
+    let interval;
+    if (updateId === true) {
+      interval = setInterval(() => {
+        let newRow = rows;
+        for (let i = 0; i < newRow.length; i++) {
+          const e = newRow[i];
+          e.fakeId = Math.floor(Math.random() * 1000000 + 1);
+          e.fakeAlbumId = Math.floor(Math.random() * 1000000 + 1);
+        }
+        setRows(newRow);
+        setAux(!aux);
+      }, 2000);
+    } else {
+      clearInterval(interval);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  });
+
+  const changeUpdateId = () => {
+    setUpdateId(!updateId);
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -57,11 +86,14 @@ export default function TableComponent() {
     textTitle.style.display = 'none';
     inputTitle.style.display = '';
 
+    setTitle(inputTitle.value);
+
     return 0;
   }
 
   const updateTitle = (e) => {
     e.preventDefault();
+
     let element = parseInt(e.target.value);
     let editButton = document.getElementById('edit-' + element);
     let doneButton = document.getElementById('done-' + element);
@@ -105,7 +137,7 @@ export default function TableComponent() {
   }
 
   return (
-    <div style={{ paddingTop: '100px' }}>
+    <div style={{ paddingTop: '100px' }} onClick={() => changeUpdateId()}>
       <Container fixed>
         <div style={{ height: 700, width: '100%' }}>
           <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -130,10 +162,10 @@ export default function TableComponent() {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                           <TableCell component="th" scope="row">
-                            {row.albumId}
+                            {row.fakeAlbumId}
                           </TableCell>
                           <TableCell align="left">
-                            {row.id}
+                            {row.fakeId}
                           </TableCell>
                           <TableCell align="left">
                             <input
