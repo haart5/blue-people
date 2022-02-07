@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 
 export default function TableComponent() {
 
@@ -22,6 +22,7 @@ export default function TableComponent() {
   const [rows, setRows] = useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(20);
+  const [title, setTitle] = useState();
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/photos?_limit=100")
@@ -44,9 +45,63 @@ export default function TableComponent() {
     setPage(0);
   };
 
-  const getRowId = (e) => {
+  const editRow = (e) => {
+    let element = e.target.value;
+    let editButton = document.getElementById('edit-' + element);
+    let doneButton = document.getElementById('done-' + element);
+    let textTitle = document.getElementById('text-' + element);
+    let inputTitle = document.getElementById('input-' + element);
+
+    editButton.style.display = 'none';
+    doneButton.style.display = '';
+    textTitle.style.display = 'none';
+    inputTitle.style.display = '';
+
+    return 0;
+  }
+
+  const updateTitle = (e) => {
     e.preventDefault();
-    console.log(e.target.value);
+    let element = parseInt(e.target.value);
+    let editButton = document.getElementById('edit-' + element);
+    let doneButton = document.getElementById('done-' + element);
+    let textTitle = document.getElementById('text-' + element);
+    let inputTitle = document.getElementById('input-' + element);
+
+    let newRows = rows;
+    let objIndex = 0;
+
+    let filtered = newRows.filter((value, index) => {
+      if (value.id === element) {
+        objIndex = index;
+        newRows[objIndex].title = title;
+      }
+      return newRows;
+    });
+
+    editButton.style.display = '';
+    doneButton.style.display = 'none';
+    textTitle.style.display = '';
+    inputTitle.style.display = 'none';
+
+    setRows(filtered);
+
+  }
+
+  const inputHandler = (e) => {
+    setTitle(e.target.value);
+  }
+
+  const deleteRow = (e) => {
+    e.preventDefault();
+    let eTarget = parseInt(e.target.value);
+    let newRows = rows;
+
+    var filtered = newRows.filter(value => {
+      return value.id !== eTarget;
+    });
+
+    setRows(filtered);
   }
 
   return (
@@ -71,7 +126,7 @@ export default function TableComponent() {
                 <TableBody>
                   {rows
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
+                    .map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                           <TableCell component="th" scope="row">
@@ -81,11 +136,23 @@ export default function TableComponent() {
                             {row.id}
                           </TableCell>
                           <TableCell align="left">
-                            {row.title}
+                            <input
+                              style={{
+                                width: '500px',
+                                display: 'none',
+                                fontFamily: 'roboto',
+                                fontSize: '14px'
+                              }}
+                              id={'input-' + row.id}
+                              defaultValue={row.title}
+                              onChange={inputHandler}
+                            />
+                            <p id={'text-' + row.id}>{row.title}</p>
                           </TableCell>
                           <TableCell align="left">
-                            <Button variant="contained" style={{ marginRight: '10px' }} key={'edit-' + row.id} value={row.actions} onClick={getRowId}>Edit</Button>
-                            <Button variant="contained" style={{ marginRight: '10px' }} key={'remove-' + row.id} value={row.actions}>Remove</Button>
+                            <Button variant="contained" style={{ marginRight: '10px' }} id={'edit-' + row.id} value={row.actions} onClick={editRow}>Edit</Button>
+                            <Button variant="contained" style={{ marginRight: '10px', display: 'none' }} id={'done-' + row.id} value={row.actions} onClick={updateTitle}>Done</Button>
+                            <Button variant="contained" style={{ marginRight: '10px' }} id={'remove-' + row.id} value={row.actions} onClick={deleteRow}>Remove</Button>
                           </TableCell>
                         </TableRow>
                       );
