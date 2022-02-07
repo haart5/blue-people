@@ -9,6 +9,8 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 export default function TableComponent() {
 
@@ -137,74 +139,89 @@ export default function TableComponent() {
   }
 
   return (
-    <div style={{ paddingTop: '100px' }} onClick={() => changeUpdateId()}>
-      <Container fixed>
-        <div style={{ height: 700, width: '100%' }}>
-          <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-              <Table stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {rows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                          <TableCell component="th" scope="row">
-                            {row.fakeAlbumId}
-                          </TableCell>
-                          <TableCell align="left">
-                            {row.fakeId}
-                          </TableCell>
-                          <TableCell align="left">
-                            <input
-                              style={{
-                                width: '500px',
-                                display: 'none',
-                                fontFamily: 'roboto',
-                                fontSize: '14px'
-                              }}
-                              id={'input-' + row.id}
-                              defaultValue={row.title}
-                              onChange={inputHandler}
-                            />
-                            <p id={'text-' + row.id}>{row.title}</p>
-                          </TableCell>
-                          <TableCell align="left">
-                            <Button variant="contained" style={{ marginRight: '10px' }} id={'edit-' + row.id} value={row.actions} onClick={editRow}>Edit</Button>
-                            <Button variant="contained" style={{ marginRight: '10px', display: 'none' }} id={'done-' + row.id} value={row.actions} onClick={updateTitle}>Done</Button>
-                            <Button variant="contained" style={{ marginRight: '10px' }} id={'remove-' + row.id} value={row.actions} onClick={deleteRow}>Remove</Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[20, 50, 100]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </div>
-      </Container>
+    <div style={{ paddingTop: '100px' }}>
 
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={2} onClick={() => changeUpdateId()} style={{
+          backgroundColor: '#e1e0e0',
+          marginLeft: '0px',
+          borderRadius: '33px'
+        }}>
+        </Grid>
+        <Grid item xs={8} style={{margin: '0px', paddingLeft: '38px'}}>
+          <Container style={{margin: '0px', paddingLeft: '0px', paddingRight: '0px'}}>
+            <div style={{ height: 700, width: '100%' }}>
+              <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+                <TableContainer sx={{ maxHeight: 650 }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            style={{ minWidth: column.minWidth }}
+                          >
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {rows
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => {
+                          return (
+                            <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                              <TableCell component="th" scope="row">
+                                {row.fakeAlbumId}
+                              </TableCell>
+                              <TableCell align="left">
+                                {row.fakeId}
+                              </TableCell>
+                              <TableCell align="left">
+                                <input
+                                  style={{
+                                    width: '500px',
+                                    display: 'none',
+                                    fontFamily: 'roboto',
+                                    fontSize: '14px'
+                                  }}
+                                  id={'input-' + row.id}
+                                  defaultValue={row.title}
+                                  onChange={inputHandler}
+                                />
+                                <p id={'text-' + row.id}>{row.title}</p>
+                              </TableCell>
+                              <TableCell align="left">
+                                <Button variant="contained" style={{ marginRight: '10px' }} id={'edit-' + row.id} value={row.actions} onClick={editRow}>Edit</Button>
+                                <Button variant="contained" style={{ marginRight: '10px', display: 'none' }} id={'done-' + row.id} value={row.actions} onClick={updateTitle}>Done</Button>
+                                <Button variant="contained" style={{ marginRight: '10px' }} id={'remove-' + row.id} value={row.actions} onClick={deleteRow}>Remove</Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[20, 50, 100]}
+                  component="div"
+                  count={rows.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            </div>
+          </Container>
+        </Grid>
+        <Grid item xs={2} onClick={() => changeUpdateId()} style={{
+          backgroundColor: '#e1e0e0',
+          marginRight: '0px',
+          borderRadius: '33px'
+        }} />
+      </Grid>
     </div>
 
   );
